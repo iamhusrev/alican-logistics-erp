@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - property:
+      name: now
+      value: now()
+      dbms: postgresql,h2
+  - property:
+      name: now
+      value: CURRENT_TIMESTAMP
+      dbms: oracle,mssql,mysql
+
+  # Include all changelog files here
+  # - include:
+  #     file: db/changelog/changes/01-create-initial-schema.yaml 
