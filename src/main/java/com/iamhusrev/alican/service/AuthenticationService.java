@@ -1,12 +1,13 @@
 package com.iamhusrev.alican.service;
 
-import com.iamhusrev.alican.dto.UserRequest;
-import com.iamhusrev.alican.entity.UserEntity;
-import com.iamhusrev.alican.repositroy.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.iamhusrev.alican.dto.UserRequest;
+import com.iamhusrev.alican.entity.UserEntity;
+import com.iamhusrev.alican.repositroy.UserRepository;
 
 @Service
 public class AuthenticationService {
@@ -29,6 +30,7 @@ public class AuthenticationService {
     public UserEntity signup(UserRequest input) {
         UserEntity user = new UserEntity();
         user.setFullName(input.getFullName());
+        user.setLocale(input.getLocale());
         user.setEmail(input.getEmail());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
 

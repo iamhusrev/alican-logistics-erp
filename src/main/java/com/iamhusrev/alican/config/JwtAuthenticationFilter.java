@@ -1,11 +1,11 @@
 package com.iamhusrev.alican.config;
 
-import com.iamhusrev.alican.service.JwtService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,21 +17,40 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iamhusrev.alican.service.JwtService;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
-
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
+    private final MessageSource messageSource;
 
     public JwtAuthenticationFilter(
         JwtService jwtService,
         UserDetailsService userDetailsService,
-        HandlerExceptionResolver handlerExceptionResolver
+        HandlerExceptionResolver handlerExceptionResolver,
+        ObjectMapper objectMapper,
+        MessageSource messageSource
     ) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
+        this.objectMapper = objectMapper;
+        this.messageSource = messageSource;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/auth/");
     }
 
     @Override
@@ -40,15 +59,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("token");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+        if (authHeader == null) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", HttpServletResponse.SC_FORBIDDEN);
+            errorResponse.put("message", messageSource.getMessage("error.unauthorized", null, LocaleContextHolder.getLocale()));
+            
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
             return;
         }
 
         try {
-            final String jwt = authHeader.substring(7);
+            final String jwt = authHeader;
             final String userEmail = jwtService.extractUsername(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -70,7 +95,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
-            handlerExceptionResolver.resolveException(request, response, null, exception);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", HttpServletResponse.SC_FORBIDDEN);
+            errorResponse.put("message", messageSource.getMessage("error.jwt_invalid", null, LocaleContextHolder.getLocale()));
+            
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
         }
     }
 }

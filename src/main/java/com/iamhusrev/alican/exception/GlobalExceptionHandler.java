@@ -1,5 +1,6 @@
 package com.iamhusrev.alican.exception;
 
+import com.iamhusrev.alican.util.AuthUtil;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class GlobalExceptionHandler {
         });
 
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", messageSource.getMessage("error.validation_failed", null, LocaleContextHolder.getLocale()));
+        response.put("message", messageSource.getMessage("error.validation_failed", null, AuthUtil.getCurrentUserLocale()));
         response.put("errors", errors);
 
         return ResponseEntity.badRequest().body(response);
@@ -57,11 +58,11 @@ public class GlobalExceptionHandler {
         Map<String, String> translatedErrors = new HashMap<>();
 
         ex.getFieldErrors().forEach((field, message) -> 
-            translatedErrors.put(field, messageSource.getMessage(message, null, LocaleContextHolder.getLocale()))
+            translatedErrors.put(field, messageSource.getMessage(message, null, AuthUtil.getCurrentUserLocale()))
         );
 
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", messageSource.getMessage("error.validation_failed", null, LocaleContextHolder.getLocale()));
+        response.put("message", messageSource.getMessage("error.validation_failed", null, AuthUtil.getCurrentUserLocale()));
         response.put("errors", translatedErrors);
 
         return ResponseEntity.badRequest().body(response);
@@ -92,10 +93,7 @@ public class GlobalExceptionHandler {
         }
 
         response.put("status", status.value());
-        response.put("message", messageSource.getMessage(messageKey, null, LocaleContextHolder.getLocale()));
-        if (descriptionKey != null) {
-            response.put("description", messageSource.getMessage(descriptionKey, null, LocaleContextHolder.getLocale()));
-        }
+        response.put("message", messageSource.getMessage(messageKey, null, AuthUtil.getCurrentUserLocale()));
 
         return ResponseEntity.status(status).body(response);
     }

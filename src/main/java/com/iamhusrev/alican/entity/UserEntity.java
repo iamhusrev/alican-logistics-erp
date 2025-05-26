@@ -2,6 +2,7 @@ package com.iamhusrev.alican.entity;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String locale;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

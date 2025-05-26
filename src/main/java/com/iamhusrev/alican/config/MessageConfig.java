@@ -26,10 +26,10 @@ public class MessageConfig {
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setSupportedLocales(Arrays.asList(
-            new Locale("en"),
-            new Locale("tr")
+            Locale.of("en"),
+            Locale.of("tr")
         ));
-        localeResolver.setDefaultLocale(new Locale("en"));
+        localeResolver.setDefaultLocale(Locale.of("en"));
         return localeResolver;
     }
 } 
