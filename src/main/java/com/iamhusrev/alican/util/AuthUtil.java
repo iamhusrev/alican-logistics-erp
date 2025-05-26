@@ -57,4 +57,12 @@ public class AuthUtil {
     public static boolean isAuthenticated() {
         return getCurrentUser().isPresent();
     }
+
+    public static boolean isAdmin() {
+        return getCurrentUser()
+            .map(user -> user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("SYSTEM_ADMIN") || 
+                                auth.getAuthority().equals("COMPANY_ADMIN")))
+            .orElse(false);
+    }
 } 

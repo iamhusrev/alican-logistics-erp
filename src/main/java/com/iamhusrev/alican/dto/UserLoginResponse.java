@@ -11,6 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserLoginResponse {
     private String token;
-
     private long expiresIn;
 }

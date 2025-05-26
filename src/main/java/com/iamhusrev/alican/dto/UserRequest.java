@@ -1,7 +1,5 @@
 package com.iamhusrev.alican.dto;
 
-import java.util.Locale;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,6 +28,8 @@ public class UserRequest {
 
     @NotBlank(message = "validation.locale")
     private String locale;
+
+    private Integer roleId = 3;
 
     @NotBlank(message = "validation.password")
     @Size(min = 6, message = "validation.password")

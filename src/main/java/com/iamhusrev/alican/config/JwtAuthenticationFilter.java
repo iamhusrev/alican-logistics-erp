@@ -1,9 +1,15 @@
 package com.iamhusrev.alican.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iamhusrev.alican.service.JwtService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.NonNull;
@@ -15,37 +21,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iamhusrev.alican.service.JwtService;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
 
-    public JwtAuthenticationFilter(
-        JwtService jwtService,
-        UserDetailsService userDetailsService,
-        HandlerExceptionResolver handlerExceptionResolver,
-        ObjectMapper objectMapper,
-        MessageSource messageSource
-    ) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.handlerExceptionResolver = handlerExceptionResolver;
-        this.objectMapper = objectMapper;
-        this.messageSource = messageSource;
-    }
+    @Value("${security.token.headerName}")
+    private String tokenHeaderName;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -58,8 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletRequest request,
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("token");
+    ) throws IOException {
+        final String authHeader = request.getHeader(tokenHeaderName);
 
         if (authHeader == null) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -73,15 +59,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            final String jwt = authHeader;
-            final String userEmail = jwtService.extractUsername(jwt);
+            final String userEmail = jwtService.extractUsername(authHeader);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                if (jwtService.isTokenValid(jwt, userDetails)) {
+                if (jwtService.isTokenValid(authHeader, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

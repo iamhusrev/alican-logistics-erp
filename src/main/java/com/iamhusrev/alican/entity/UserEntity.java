@@ -1,23 +1,23 @@
 package com.iamhusrev.alican.entity;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import com.iamhusrev.alican.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Getter
@@ -45,9 +45,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String locale;
 
+    @Column(nullable = false)
+    private Integer roleId;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(Objects.requireNonNull(UserRole.fromValue(roleId)).name()));
     }
 
     @Override
