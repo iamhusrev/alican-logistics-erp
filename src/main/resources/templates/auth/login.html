@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş - Alican Logistics ERP</title>
+    
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/webjars/font-awesome/css/all.min.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 15px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        .form-floating {
+            margin-bottom: 15px;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Alican Logistics ERP</h2>
+                <p class="text-muted">Lütfen giriş yapın</p>
+            </div>
+
+            <div th:if="${param.error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> Geçersiz email veya şifre.
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> Başarıyla çıkış yaptınız.
+            </div>
+
+            <form th:action="@{/auth/login}" method="post" id="loginForm">
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <label for="email">Email adresi</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Şifre" required>
+                    <label for="password">Şifre</label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="rememberMe" name="remember-me">
+                    <label class="form-check-label" for="rememberMe">
+                        Beni hatırla
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- jQuery -->
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <!-- Custom JavaScript -->
+    <script th:src="@{/js/login.js}"></script>
+</body>
+</html> 

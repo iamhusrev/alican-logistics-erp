@@ -1,5 +1,13 @@
-package com.iamhusrev.alican.controller;
+package com.iamhusrev.alican.controller_api;
 
+import com.iamhusrev.alican.dto.UserLoginResponse;
+import com.iamhusrev.alican.dto.UserRequest;
+import com.iamhusrev.alican.entity.UserEntity;
+import com.iamhusrev.alican.service.AuthenticationService;
+import com.iamhusrev.alican.service.JwtService;
+import com.iamhusrev.alican.util.AuthUtil;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,17 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iamhusrev.alican.dto.UserLoginResponse;
-import com.iamhusrev.alican.dto.UserRequest;
-import com.iamhusrev.alican.entity.UserEntity;
-import com.iamhusrev.alican.service.AuthenticationService;
-import com.iamhusrev.alican.service.JwtService;
-import com.iamhusrev.alican.util.AuthUtil;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {

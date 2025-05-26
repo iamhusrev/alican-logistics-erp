@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Dashboard</h1>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-secondary">
+                    <i class="fas fa-download"></i> Rapor İndir
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                    <i class="fas fa-print"></i> Yazdır
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="icon text-primary">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="title">Toplam Satış</div>
+                    <div class="value" th:text="${totalSales}">₺0</div>
+                    <div class="trend text-success">
+                        <i class="fas fa-arrow-up"></i> 12%
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="icon text-success">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="title">Aktif Müşteriler</div>
+                    <div class="value" th:text="${activeCustomers}">0</div>
+                    <div class="trend text-success">
+                        <i class="fas fa-arrow-up"></i> 8%
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="icon text-warning">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="title">Stok Ürünleri</div>
+                    <div class="value" th:text="${totalProducts}">0</div>
+                    <div class="trend text-danger">
+                        <i class="fas fa-arrow-down"></i> 3%
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="icon text-info">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="title">Bekleyen Siparişler</div>
+                    <div class="value" th:text="${pendingOrders}">0</div>
+                    <div class="trend text-warning">
+                        <i class="fas fa-minus"></i> 0%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Son Siparişler</h5>
+                <a href="/sales/orders" class="btn btn-sm btn-primary">Tümünü Gör</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Müşteri</th>
+                                <th>Tarih</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${recentOrders}">
+                                <td th:text="${order.orderNumber}">#12345</td>
+                                <td th:text="${order.customerName}">Ahmet Yılmaz</td>
+                                <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}">01/01/2024</td>
+                                <td th:text="${#numbers.formatCurrency(order.total)}">₺1,234.56</td>
+                                <td>
+                                    <span class="badge" th:classappend="${order.status == 'COMPLETED' ? 'bg-success' : 'bg-warning'}"
+                                          th:text="${order.status}">Beklemede</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert -->
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Düşük Stok Uyarıları</h5>
+                <a href="/inventory/products" class="btn btn-sm btn-primary">Tümünü Gör</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ürün Kodu</th>
+                                <th>Ürün Adı</th>
+                                <th>Mevcut Stok</th>
+                                <th>Minimum Stok</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${lowStockProducts}">
+                                <td th:text="${product.code}">PRD001</td>
+                                <td th:text="${product.name}">Örnek Ürün</td>
+                                <td th:text="${product.currentStock}">5</td>
+                                <td th:text="${product.minimumStock}">10</td>
+                                <td>
+                                    <span class="badge bg-danger">Kritik</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="fas fa-plus"></i> Sipariş Ver
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

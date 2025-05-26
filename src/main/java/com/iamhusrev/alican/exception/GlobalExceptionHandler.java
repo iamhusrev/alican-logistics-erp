@@ -85,7 +85,6 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         String messageKey = "error.internal_server";
-        String descriptionKey = null;
 
         if (exception instanceof BadCredentialsException) {
             status = HttpStatus.UNAUTHORIZED;

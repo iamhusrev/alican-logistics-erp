@@ -1,4 +1,4 @@
-package com.iamhusrev.alican.controller;
+package com.iamhusrev.alican.controller_api;
 
 import com.iamhusrev.alican.entity.UserEntity;
 import com.iamhusrev.alican.service.UserService;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
