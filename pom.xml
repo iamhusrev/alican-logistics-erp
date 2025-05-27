@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.iamhusrev</groupId>
-	<artifactId>alican-logistics-erp</artifactId>
+	<artifactId>alican-logistics-erp-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>alican-logistics-erp</name>
 	<description>Alican Logistics ERP</description>

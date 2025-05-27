@@ -1,4 +1,4 @@
-package com.iamhusrev.alican.controller_api;
+package com.iamhusrev.alican.controller;
 
 import com.iamhusrev.alican.dto.UserLoginResponse;
 import com.iamhusrev.alican.dto.UserRequest;

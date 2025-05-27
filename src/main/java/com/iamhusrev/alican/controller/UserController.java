@@ -1,4 +1,4 @@
-package com.iamhusrev.alican.controller_api;
+package com.iamhusrev.alican.controller;
 
 import com.iamhusrev.alican.entity.UserEntity;
 import com.iamhusrev.alican.service.UserService;
